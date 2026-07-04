@@ -1,5 +1,9 @@
 (function () {
   const meteor = document.querySelector("#meteor");
+  const sky = document.querySelector(".sky");
+  const mecha = document.querySelector(".mecha");
+  const beam = document.querySelector("#beam");
+  const impactRing = document.querySelector("#impact-ring");
   const problemEl = document.querySelector("#problem");
   const answersEl = document.querySelector("#answers");
   const scoreEl = document.querySelector("#score");
@@ -19,6 +23,32 @@
   let topPosition = 28;
   let best = Number(localStorage.getItem("meteorMathBest") || 0);
   bestEl.textContent = best;
+
+  function restartAnimation(element, className) {
+    element.classList.remove(className);
+    void element.offsetWidth;
+    element.classList.add(className);
+  }
+
+  function positionImpactRing() {
+    const meteorRect = meteor.getBoundingClientRect();
+    const skyRect = sky.getBoundingClientRect();
+    impactRing.style.left = `${meteorRect.left - skyRect.left + meteorRect.width / 2}px`;
+    impactRing.style.top = `${meteorRect.top - skyRect.top + meteorRect.height / 2}px`;
+  }
+
+  function fireEffects(kind) {
+    sky.classList.remove("hit-flash", "miss-shake");
+    meteor.classList.remove("hit", "miss");
+    restartAnimation(mecha, "fire");
+    restartAnimation(beam, "fire");
+    restartAnimation(meteor, kind);
+    restartAnimation(sky, kind === "hit" ? "hit-flash" : "miss-shake");
+    if (kind === "hit") {
+      positionImpactRing();
+      restartAnimation(impactRing, "fire");
+    }
+  }
 
   function shuffle(values) {
     return values.sort(() => Math.random() - 0.5);
@@ -60,12 +90,14 @@
   function nextMeteor() {
     topPosition = 28;
     meteor.style.top = `${topPosition}px`;
+    meteor.classList.remove("hit", "miss");
     makeProblem();
   }
 
   function miss() {
     shields -= 1;
     streak = 0;
+    fireEffects("miss");
     statusEl.textContent = shields > 0 ? "Meteor slipped through. New target." : "Shields down. Start again?";
     updateStats();
     if (shields <= 0) {
@@ -86,9 +118,10 @@
     if (value === currentAnswer) {
       streak += 1;
       score += 20 + streak * 3;
+      fireEffects("hit");
       statusEl.textContent = "Direct hit.";
       updateStats();
-      nextMeteor();
+      window.setTimeout(nextMeteor, 420);
     } else {
       statusEl.textContent = "Close, but not that one.";
       miss();

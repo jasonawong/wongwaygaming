@@ -30,10 +30,43 @@
         </aside>
         <section class="stage math-stage" aria-label="Meteor Math game">
           <div class="sky">
-            <div class="meteor" id="meteor">
-              <span id="problem">?</span>
+            <div class="starfield layer-back" aria-hidden="true"></div>
+            <div class="orbital-rings" aria-hidden="true"></div>
+            <div class="speed-lines" aria-hidden="true"></div>
+            <div class="battle-hud" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
-            <div class="laser-base"></div>
+            <div class="target-reticle" aria-hidden="true"></div>
+            <div class="beam" id="beam" aria-hidden="true"></div>
+            <div class="impact-ring" id="impact-ring" aria-hidden="true"></div>
+            <div class="meteor" id="meteor">
+              <span class="meteor-glow" aria-hidden="true"></span>
+              <span id="problem">?</span>
+              <span class="meteor-crack crack-a" aria-hidden="true"></span>
+              <span class="meteor-crack crack-b" aria-hidden="true"></span>
+            </div>
+            <div class="mecha" aria-hidden="true">
+              <div class="shoulder shoulder-left"></div>
+              <div class="shoulder shoulder-right"></div>
+              <div class="head">
+                <span class="visor"></span>
+                <span class="crest"></span>
+              </div>
+              <div class="torso">
+                <span class="core"></span>
+                <span class="panel panel-left"></span>
+                <span class="panel panel-right"></span>
+              </div>
+              <div class="cannon">
+                <span class="barrel"></span>
+                <span class="muzzle"></span>
+              </div>
+              <div class="thruster thruster-left"></div>
+              <div class="thruster thruster-right"></div>
+            </div>
           </div>
           <div class="answer-row" id="answers"></div>
         </section>
