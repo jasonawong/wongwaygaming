@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wong Way Gaming</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Wong Way Gaming home">
+        <span class="brand-mark" aria-hidden="true">WW</span>
+        <span>Wong Way Gaming</span>
+      </a>
+      <nav class="top-nav" aria-label="Game collections">
+        <a href="#jackson-games">Jackson Games</a>
+        <a href="#olivia-games">Olivia Games</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Browser-native family arcade</p>
+          <h1 id="page-title">Pick a game and play the Wong way.</h1>
+          <p>
+            Fast, colorful games built as standalone apps for GitHub Pages.
+            Choose a tile to preview the rules, then jump straight into play.
+          </p>
+        </div>
+        <div class="hero-scene" aria-hidden="true">
+          <div class="arcade-screen">
+            <div class="pixel-grid">
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="joystick"></div>
+          <div class="button-row"><span></span><span></span><span></span></div>
+        </div>
+      </section>
+
+      <section class="game-section" id="jackson-games" aria-labelledby="jackson-title">
+        <div class="section-heading">
+          <p class="eyebrow">Action and reflex games</p>
+          <h2 id="jackson-title">Jackson Games</h2>
+        </div>
+        <div class="game-grid" data-game-group="jackson"></div>
+      </section>
+
+      <section class="game-section" id="olivia-games" aria-labelledby="olivia-title">
+        <div class="section-heading">
+          <p class="eyebrow">Puzzle and rhythm games</p>
+          <h2 id="olivia-title">Olivia Games</h2>
+        </div>
+        <div class="game-grid" data-game-group="olivia"></div>
+      </section>
+    </main>
+
+    <dialog class="game-dialog" id="game-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-layout">
+        <button class="icon-button dialog-close" type="button" aria-label="Close game details" data-close-dialog>
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="dialog-art" id="dialog-art" aria-hidden="true"></div>
+        <div class="dialog-copy">
+          <p class="eyebrow" id="dialog-group"></p>
+          <h2 id="dialog-title"></h2>
+          <p id="dialog-description"></p>
+          <dl class="game-facts">
+            <div>
+              <dt>Goal</dt>
+              <dd id="dialog-goal"></dd>
+            </div>
+            <div>
+              <dt>Controls</dt>
+              <dd id="dialog-controls"></dd>
+            </div>
+          </dl>
+          <div class="dialog-actions">
+            <a class="primary-action" id="dialog-play" href="#">Play</a>
+            <button class="secondary-action" type="button" data-close-dialog>Back</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <footer class="site-footer">
+      <p>Made for GitHub Pages. Every game lives in its own folder and runs in the browser.</p>
+    </footer>
+
+    <script src="assets/games.js"></script>
+    <script src="assets/main.js"></script>
+  </body>
+</html>

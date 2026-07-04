@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meteor Math | Wong Way Gaming</title>
+    <link rel="stylesheet" href="../../shared/game-shell.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="game-page">
+      <header class="game-header">
+        <a class="back-link" href="../../../">&larr; Arcade</a>
+        <h1 class="game-title">Meteor Math</h1>
+      </header>
+      <main class="game-main">
+        <aside class="info-panel">
+          <p>Choose the answer that matches the falling meteor. Each correct shot earns points and pushes the next meteor higher.</p>
+          <div class="stat-grid">
+            <div class="stat"><span>Score</span><strong id="score">0</strong></div>
+            <div class="stat"><span>Shields</span><strong id="shields">3</strong></div>
+            <div class="stat"><span>Streak</span><strong id="streak">0</strong></div>
+            <div class="stat"><span>Best</span><strong id="best">0</strong></div>
+          </div>
+          <p class="status-line" id="status">Start a round to load the first meteor.</p>
+          <div class="control-row">
+            <button class="game-button" id="start-button" type="button">Start</button>
+            <button class="game-button secondary" id="reset-button" type="button">Reset</button>
+          </div>
+        </aside>
+        <section class="stage math-stage" aria-label="Meteor Math game">
+          <div class="sky">
+            <div class="meteor" id="meteor">
+              <span id="problem">?</span>
+            </div>
+            <div class="laser-base"></div>
+          </div>
+          <div class="answer-row" id="answers"></div>
+        </section>
+      </main>
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>

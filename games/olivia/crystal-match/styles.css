@@ -1,0 +1,74 @@
+.memory-stage {
+  display: grid;
+  min-height: 560px;
+  place-items: center;
+  padding: clamp(14px, 3vw, 28px);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(109, 93, 252, 0.18), transparent 28%),
+    radial-gradient(circle at 85% 70%, rgba(8, 127, 140, 0.2), transparent 30%),
+    #eef9f7;
+}
+
+.memory-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(68px, 122px));
+  gap: clamp(10px, 2vw, 18px);
+  width: min(100%, 560px);
+}
+
+.card {
+  position: relative;
+  aspect-ratio: 1;
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  background: #17202a;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 220ms ease;
+}
+
+.card[aria-pressed="true"],
+.card.matched {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  backface-visibility: hidden;
+}
+
+.card-front {
+  background:
+    linear-gradient(135deg, transparent 45%, rgba(255,255,255,0.18) 46% 54%, transparent 55%),
+    #17202a;
+}
+
+.card-front::before {
+  width: 32%;
+  height: 32%;
+  border: 2px solid rgba(255,255,255,0.8);
+  transform: rotate(45deg);
+  content: "";
+}
+
+.card-back {
+  background: var(--card-color);
+  transform: rotateY(180deg);
+}
+
+.card-back::before {
+  width: 48%;
+  height: 48%;
+  border: 4px solid rgba(255,255,255,0.86);
+  background: rgba(255,255,255,0.25);
+  clip-path: polygon(50% 0, 100% 35%, 82% 100%, 18% 100%, 0 35%);
+  content: "";
+}
+
+.card:disabled {
+  cursor: default;
+}

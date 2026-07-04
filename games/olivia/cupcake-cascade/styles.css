@@ -1,0 +1,11 @@
+body {
+  --accent: #ff8fb3;
+}
+
+.stage {
+  background: #f9efe8;
+}
+
+#start-button {
+  background: var(--accent);
+}

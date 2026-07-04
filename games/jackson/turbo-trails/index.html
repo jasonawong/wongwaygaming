@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Turbo Trails | Wong Way Gaming</title>
+    <link rel="stylesheet" href="../../shared/game-shell.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="game-page">
+      <header class="game-header">
+        <a class="back-link" href="../../../">&larr; Arcade</a>
+        <h1 class="game-title">Turbo Trails</h1>
+      </header>
+      <main class="game-main">
+        <aside class="info-panel">
+          <p>Slide between lanes, grab lightning bolts, and dodge cones. The road gets quicker the longer you survive.</p>
+          <div class="stat-grid">
+            <div class="stat"><span>Score</span><strong id="score">0</strong></div>
+            <div class="stat"><span>Lives</span><strong id="lives">3</strong></div>
+            <div class="stat"><span>Speed</span><strong id="speed">1</strong></div>
+            <div class="stat"><span>Best</span><strong id="best">0</strong></div>
+          </div>
+          <p class="status-line" id="status">Ready when you are.</p>
+          <div class="control-row">
+            <button class="game-button" id="start-button" type="button">Start</button>
+            <button class="game-button secondary" id="reset-button" type="button">Reset</button>
+          </div>
+        </aside>
+        <section class="stage-wrap" aria-label="Turbo Trails game">
+          <canvas class="stage" id="game" width="900" height="675"></canvas>
+          <div class="mobile-controls" aria-label="Lane controls">
+            <button class="game-button secondary" id="left-button" type="button">Left</button>
+            <button class="game-button secondary" id="right-button" type="button">Right</button>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>
