@@ -5,6 +5,8 @@
   const beam = document.querySelector("#beam");
   const impactRing = document.querySelector("#impact-ring");
   const floatingScore = document.querySelector("#floating-score");
+  const shipBurst = document.querySelector("#ship-burst");
+  const gameOverBanner = document.querySelector("#game-over-banner");
   const shieldDome = document.querySelector("#shield-dome");
   const speedBanner = document.querySelector("#speed-banner");
   const problemEl = document.querySelector("#problem");
@@ -31,6 +33,8 @@
   let speedLevel = 0;
   let fallSpeed = 58;
   let best = Number(localStorage.getItem("meteorMathBest") || 0);
+  const crashImpactDelay = 680;
+  const crashResolveDelay = 1650;
   bestEl.textContent = best;
 
   function restartAnimation(element, className) {
@@ -48,13 +52,16 @@
   function clearEffectClasses() {
     sky.classList.remove("hit-flash", "miss-shake");
     meteor.classList.remove("hit", "dodge", "crash", "hidden");
-    ship.classList.remove("fire");
+    ship.classList.remove("fire", "destroyed");
     beam.classList.remove("fire", "miss");
     impactRing.classList.remove("fire");
-    shieldDome.classList.remove("hit");
+    shieldDome.classList.remove("hit", "destroyed");
     floatingScore.classList.remove("show", "damage");
+    shipBurst.classList.remove("show");
+    gameOverBanner.classList.remove("show");
     speedBanner.classList.remove("show");
-    [meteor, ship, beam, impactRing, shieldDome, floatingScore, speedBanner].forEach((element) => {
+    floatingScore.textContent = "";
+    [meteor, ship, beam, impactRing, shieldDome, floatingScore, shipBurst, gameOverBanner, speedBanner].forEach((element) => {
       element.style.animation = "";
     });
   }
@@ -84,6 +91,19 @@
   function showSpeedBanner() {
     restartAnimation(speedBanner, "show");
     playAnimation(speedBanner, "bannerPop 1700ms ease-out");
+  }
+
+  function showGameOver() {
+    gameOverBanner.textContent = "Game Over";
+    restartAnimation(ship, "destroyed");
+    restartAnimation(shieldDome, "destroyed");
+    restartAnimation(shipBurst, "show");
+    restartAnimation(gameOverBanner, "show");
+    playAnimation(ship, "fighterBreak 1400ms ease-out forwards");
+    playAnimation(shieldDome, "shieldCollapse 1450ms ease-out forwards");
+    playAnimation(shipBurst, "shipBurst 1250ms ease-out forwards");
+    playAnimation(gameOverBanner, "gameOverPop 1800ms ease-out forwards");
+    statusEl.textContent = "Game over.";
   }
 
   function updateStats() {
@@ -176,16 +196,18 @@
   }
 
   function crashIntoShield() {
-    setMeteorPosition(50, 290);
+    setMeteorPosition(50, 248);
     restartAnimation(meteor, "crash");
-    restartAnimation(shieldDome, "hit");
     restartAnimation(sky, "miss-shake");
-    positionElementAtMeteor(impactRing);
-    restartAnimation(impactRing, "fire");
     playAnimation(meteor, "meteorShieldCrash 760ms ease-in forwards");
-    playAnimation(shieldDome, "shieldImpact 820ms ease-out");
-    playAnimation(impactRing, "impactPop 900ms ease-out forwards");
-    showFloatingText("-1 shield", "damage");
+    window.setTimeout(() => {
+      restartAnimation(shieldDome, "hit");
+      positionElementAtMeteor(impactRing);
+      restartAnimation(impactRing, "fire");
+      playAnimation(shieldDome, "shieldImpact 820ms ease-out");
+      playAnimation(impactRing, "impactPop 900ms ease-out forwards");
+      showFloatingText("-1 shield", "damage");
+    }, crashImpactDelay);
   }
 
   function completeWrongAnswer(message, dodgeLaser) {
@@ -195,7 +217,7 @@
     cancelAnimationFrame(animationId);
     streak = 0;
     shields -= 1;
-    fireBeam("miss");
+    if (dodgeLaser) fireBeam("miss");
     statusEl.textContent = message;
     updateStats();
 
@@ -212,12 +234,12 @@
       if (shields <= 0) {
         stop();
         meteor.classList.add("hidden");
-        statusEl.textContent = "Shields down. Start again?";
+        showGameOver();
       } else {
         nextMeteor();
         if (spedUp) announceSpeedUp();
       }
-    }, 1350);
+    }, crashResolveDelay);
   }
 
   function choose(value) {
@@ -252,7 +274,7 @@
     setMeteorPosition(meteorX, meteorY + fallSpeed * delta);
 
     if (meteorY > 302) {
-      completeWrongAnswer("Meteor hit the planet shield.", false);
+      completeWrongAnswer("Meteor hit the space fighter.", false);
       return;
     }
 
