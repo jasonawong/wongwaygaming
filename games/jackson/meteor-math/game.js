@@ -1,9 +1,12 @@
 (function () {
   const meteor = document.querySelector("#meteor");
   const sky = document.querySelector(".sky");
-  const mecha = document.querySelector(".mecha");
+  const ship = document.querySelector(".space-plane");
   const beam = document.querySelector("#beam");
   const impactRing = document.querySelector("#impact-ring");
+  const floatingScore = document.querySelector("#floating-score");
+  const shieldDome = document.querySelector("#shield-dome");
+  const speedBanner = document.querySelector("#speed-banner");
   const problemEl = document.querySelector("#problem");
   const answersEl = document.querySelector("#answers");
   const scoreEl = document.querySelector("#score");
@@ -18,9 +21,15 @@
   let shields = 3;
   let streak = 0;
   let running = false;
+  let resolving = false;
   let currentAnswer = 0;
-  let fallTimer = null;
-  let topPosition = 28;
+  let meteorY = 28;
+  let meteorX = 50;
+  let lastFrame = 0;
+  let animationId = 0;
+  let questionsResolved = 0;
+  let speedLevel = 0;
+  let fallSpeed = 58;
   let best = Number(localStorage.getItem("meteorMathBest") || 0);
   bestEl.textContent = best;
 
@@ -30,28 +39,51 @@
     element.classList.add(className);
   }
 
-  function positionImpactRing() {
+  function playAnimation(element, animation) {
+    element.style.animation = "none";
+    void element.offsetWidth;
+    element.style.animation = animation;
+  }
+
+  function clearEffectClasses() {
+    sky.classList.remove("hit-flash", "miss-shake");
+    meteor.classList.remove("hit", "dodge", "crash", "hidden");
+    ship.classList.remove("fire");
+    beam.classList.remove("fire", "miss");
+    impactRing.classList.remove("fire");
+    shieldDome.classList.remove("hit");
+    floatingScore.classList.remove("show", "damage");
+    speedBanner.classList.remove("show");
+    [meteor, ship, beam, impactRing, shieldDome, floatingScore, speedBanner].forEach((element) => {
+      element.style.animation = "";
+    });
+  }
+
+  function setMeteorPosition(x, y) {
+    meteorX = x;
+    meteorY = y;
+    meteor.style.left = `${meteorX}%`;
+    meteor.style.top = `${meteorY}px`;
+  }
+
+  function positionElementAtMeteor(element) {
     const meteorRect = meteor.getBoundingClientRect();
     const skyRect = sky.getBoundingClientRect();
-    impactRing.style.left = `${meteorRect.left - skyRect.left + meteorRect.width / 2}px`;
-    impactRing.style.top = `${meteorRect.top - skyRect.top + meteorRect.height / 2}px`;
+    element.style.left = `${meteorRect.left - skyRect.left + meteorRect.width / 2}px`;
+    element.style.top = `${meteorRect.top - skyRect.top + meteorRect.height / 2}px`;
   }
 
-  function fireEffects(kind) {
-    sky.classList.remove("hit-flash", "miss-shake");
-    meteor.classList.remove("hit", "miss");
-    restartAnimation(mecha, "fire");
-    restartAnimation(beam, "fire");
-    restartAnimation(meteor, kind);
-    restartAnimation(sky, kind === "hit" ? "hit-flash" : "miss-shake");
-    if (kind === "hit") {
-      positionImpactRing();
-      restartAnimation(impactRing, "fire");
-    }
+  function showFloatingText(text, kind) {
+    positionElementAtMeteor(floatingScore);
+    floatingScore.textContent = text;
+    floatingScore.classList.toggle("damage", kind === "damage");
+    restartAnimation(floatingScore, "show");
+    playAnimation(floatingScore, "scoreDissolve 1150ms ease-out forwards");
   }
 
-  function shuffle(values) {
-    return values.sort(() => Math.random() - 0.5);
+  function showSpeedBanner() {
+    restartAnimation(speedBanner, "show");
+    playAnimation(speedBanner, "bannerPop 1700ms ease-out");
   }
 
   function updateStats() {
@@ -65,15 +97,19 @@
     }
   }
 
+  function shuffle(values) {
+    return values.sort(() => Math.random() - 0.5);
+  }
+
   function makeProblem() {
-    const max = Math.min(12, 5 + Math.floor(score / 60));
+    const max = Math.min(14, 5 + speedLevel + Math.floor(score / 110));
     const a = 1 + Math.floor(Math.random() * max);
     const b = 1 + Math.floor(Math.random() * max);
     currentAnswer = a + b;
     problemEl.textContent = `${a} + ${b}`;
 
     const wrongOne = currentAnswer + (Math.random() > 0.5 ? 1 : -1) * (1 + Math.floor(Math.random() * 3));
-    const wrongTwo = currentAnswer + (Math.random() > 0.5 ? 1 : -1) * (4 + Math.floor(Math.random() * 4));
+    const wrongTwo = currentAnswer + (Math.random() > 0.5 ? 1 : -1) * (4 + Math.floor(Math.random() * 5));
     const choices = shuffle([currentAnswer, Math.max(1, wrongOne), Math.max(1, wrongTwo)]);
     answersEl.innerHTML = "";
     choices.forEach((choice, index) => {
@@ -87,61 +123,158 @@
     });
   }
 
-  function nextMeteor() {
-    topPosition = 28;
-    meteor.style.top = `${topPosition}px`;
-    meteor.classList.remove("hit", "miss");
-    makeProblem();
+  function setAnswersDisabled(disabled) {
+    answersEl.querySelectorAll(".answer").forEach((button) => {
+      button.disabled = disabled;
+    });
   }
 
-  function miss() {
-    shields -= 1;
-    streak = 0;
-    fireEffects("miss");
-    statusEl.textContent = shields > 0 ? "Meteor slipped through. New target." : "Shields down. Start again?";
-    updateStats();
-    if (shields <= 0) {
-      stop();
-    } else {
-      nextMeteor();
+  function updateSpeedIfNeeded() {
+    if (questionsResolved > 0 && questionsResolved % 5 === 0) {
+      speedLevel += 1;
+      fallSpeed += 16;
+      return true;
     }
+    return false;
   }
 
-  function tick() {
-    topPosition += 10 + Math.floor(score / 80);
-    meteor.style.top = `${topPosition}px`;
-    if (topPosition > 330) miss();
+  function countResolvedQuestion() {
+    questionsResolved += 1;
+    return updateSpeedIfNeeded();
+  }
+
+  function announceSpeedUp() {
+    statusEl.textContent = "Meteors are coming in faster.";
+    showSpeedBanner();
+  }
+
+  function nextMeteor() {
+    clearEffectClasses();
+    resolving = false;
+    setAnswersDisabled(false);
+    setMeteorPosition(50, 28);
+    makeProblem();
+    lastFrame = performance.now();
+    animationId = requestAnimationFrame(tick);
+  }
+
+  function fireBeam(kind) {
+    restartAnimation(ship, "fire");
+    restartAnimation(beam, kind === "miss" ? "miss" : "fire");
+    playAnimation(ship, "planeRecoil 420ms ease-out");
+    playAnimation(beam, kind === "miss" ? "beamMiss 520ms ease-out" : "beamFire 420ms ease-out");
+  }
+
+  function explodeMeteor(pointsEarned) {
+    positionElementAtMeteor(impactRing);
+    restartAnimation(impactRing, "fire");
+    restartAnimation(meteor, "hit");
+    restartAnimation(sky, "hit-flash");
+    playAnimation(impactRing, "impactPop 900ms ease-out forwards");
+    playAnimation(meteor, "meteorExplode 760ms ease-out forwards");
+    showFloatingText(`+${pointsEarned}`, "score");
+  }
+
+  function crashIntoShield() {
+    setMeteorPosition(50, 290);
+    restartAnimation(meteor, "crash");
+    restartAnimation(shieldDome, "hit");
+    restartAnimation(sky, "miss-shake");
+    positionElementAtMeteor(impactRing);
+    restartAnimation(impactRing, "fire");
+    playAnimation(meteor, "meteorShieldCrash 760ms ease-in forwards");
+    playAnimation(shieldDome, "shieldImpact 820ms ease-out");
+    playAnimation(impactRing, "impactPop 900ms ease-out forwards");
+    showFloatingText("-1 shield", "damage");
+  }
+
+  function completeWrongAnswer(message, dodgeLaser) {
+    if (!running || resolving) return;
+    resolving = true;
+    setAnswersDisabled(true);
+    cancelAnimationFrame(animationId);
+    streak = 0;
+    shields -= 1;
+    fireBeam("miss");
+    statusEl.textContent = message;
+    updateStats();
+
+    if (dodgeLaser) {
+      restartAnimation(meteor, "dodge");
+      playAnimation(meteor, "meteorDodge 520ms ease-out forwards");
+      window.setTimeout(crashIntoShield, 520);
+    } else {
+      crashIntoShield();
+    }
+
+    window.setTimeout(() => {
+      const spedUp = countResolvedQuestion();
+      if (shields <= 0) {
+        stop();
+        meteor.classList.add("hidden");
+        statusEl.textContent = "Shields down. Start again?";
+      } else {
+        nextMeteor();
+        if (spedUp) announceSpeedUp();
+      }
+    }, 1350);
   }
 
   function choose(value) {
-    if (!running) return;
+    if (!running || resolving) return;
+
     if (value === currentAnswer) {
+      resolving = true;
+      setAnswersDisabled(true);
+      cancelAnimationFrame(animationId);
       streak += 1;
-      score += 20 + streak * 3;
-      fireEffects("hit");
+      const pointsEarned = 20 + streak * 3 + speedLevel * 2;
+      score += pointsEarned;
+      fireBeam("hit");
+      explodeMeteor(pointsEarned);
       statusEl.textContent = "Direct hit.";
       updateStats();
-      window.setTimeout(nextMeteor, 420);
-    } else {
-      statusEl.textContent = "Close, but not that one.";
-      miss();
+      window.setTimeout(() => {
+        const spedUp = countResolvedQuestion();
+        nextMeteor();
+        if (spedUp) announceSpeedUp();
+      }, 1180);
+      return;
     }
+
+    completeWrongAnswer("The meteor dodged the laser.", true);
+  }
+
+  function tick(time) {
+    if (!running || resolving) return;
+    const delta = Math.min(40, time - lastFrame) / 1000;
+    lastFrame = time;
+    setMeteorPosition(meteorX, meteorY + fallSpeed * delta);
+
+    if (meteorY > 302) {
+      completeWrongAnswer("Meteor hit the planet shield.", false);
+      return;
+    }
+
+    animationId = requestAnimationFrame(tick);
   }
 
   function start() {
     if (running) return;
     if (shields <= 0) reset();
     running = true;
+    resolving = false;
     startButton.textContent = "Running";
     statusEl.textContent = "Pick the matching answer.";
     nextMeteor();
-    fallTimer = window.setInterval(tick, 650);
   }
 
   function stop() {
     running = false;
+    resolving = false;
     startButton.textContent = "Restart";
-    window.clearInterval(fallTimer);
+    cancelAnimationFrame(animationId);
+    setAnswersDisabled(true);
   }
 
   function reset() {
@@ -149,8 +282,12 @@
     score = 0;
     shields = 3;
     streak = 0;
-    topPosition = 28;
-    meteor.style.top = `${topPosition}px`;
+    questionsResolved = 0;
+    speedLevel = 0;
+    fallSpeed = 58;
+    currentAnswer = 0;
+    setMeteorPosition(50, 28);
+    clearEffectClasses();
     problemEl.textContent = "?";
     answersEl.innerHTML = "";
     statusEl.textContent = "Start a round to load the first meteor.";
