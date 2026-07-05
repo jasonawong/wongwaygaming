@@ -18,12 +18,28 @@
   const statusEl = document.querySelector("#status");
   const startButton = document.querySelector("#start-button");
   const resetButton = document.querySelector("#reset-button");
+  const buyShieldButton = document.querySelector("#buy-shield");
+  const buyFreezeButton = document.querySelector("#buy-freeze");
+  const buyBombButton = document.querySelector("#buy-bomb");
+  const useFreezeButton = document.querySelector("#use-freeze");
+  const useBombButton = document.querySelector("#use-bomb");
+  const freezeCountEl = document.querySelector("#freeze-count");
+  const bombCountEl = document.querySelector("#bomb-count");
+
+  const shopItems = {
+    shield: { cost: 45 },
+    freeze: { cost: 35 },
+    bomb: { cost: 60 }
+  };
 
   let score = 0;
   let shields = 3;
   let streak = 0;
+  let freezeRays = 0;
+  let bombs = 0;
   let running = false;
   let resolving = false;
+  let frozenUntil = 0;
   let currentAnswer = 0;
   let meteorY = 28;
   let meteorX = 50;
@@ -51,7 +67,7 @@
 
   function clearEffectClasses() {
     sky.classList.remove("hit-flash", "miss-shake");
-    meteor.classList.remove("hit", "dodge", "crash", "hidden");
+    meteor.classList.remove("hit", "dodge", "crash", "hidden", "frozen");
     ship.classList.remove("fire", "destroyed");
     beam.classList.remove("fire", "miss");
     impactRing.classList.remove("fire");
@@ -110,6 +126,13 @@
     scoreEl.textContent = score;
     shieldsEl.textContent = shields;
     streakEl.textContent = streak;
+    freezeCountEl.textContent = freezeRays;
+    bombCountEl.textContent = bombs;
+    buyShieldButton.disabled = score < shopItems.shield.cost || shields <= 0;
+    buyFreezeButton.disabled = score < shopItems.freeze.cost || shields <= 0;
+    buyBombButton.disabled = score < shopItems.bomb.cost || shields <= 0;
+    useFreezeButton.disabled = !running || resolving || freezeRays <= 0;
+    useBombButton.disabled = !running || resolving || bombs <= 0;
     if (score > best) {
       best = score;
       localStorage.setItem("meteorMathBest", String(best));
@@ -171,9 +194,11 @@
   function nextMeteor() {
     clearEffectClasses();
     resolving = false;
+    frozenUntil = 0;
     setAnswersDisabled(false);
     setMeteorPosition(50, 28);
     makeProblem();
+    updateStats();
     lastFrame = performance.now();
     animationId = requestAnimationFrame(tick);
   }
@@ -185,14 +210,68 @@
     playAnimation(beam, kind === "miss" ? "beamMiss 520ms ease-out" : "beamFire 420ms ease-out");
   }
 
-  function explodeMeteor(pointsEarned) {
+  function explodeMeteor(pointsEarned, rewardText) {
     positionElementAtMeteor(impactRing);
     restartAnimation(impactRing, "fire");
     restartAnimation(meteor, "hit");
     restartAnimation(sky, "hit-flash");
     playAnimation(impactRing, "impactPop 900ms ease-out forwards");
     playAnimation(meteor, "meteorExplode 760ms ease-out forwards");
-    showFloatingText(`+${pointsEarned}`, "score");
+    if (rewardText) {
+      showFloatingText(rewardText, "score");
+    } else if (pointsEarned > 0) {
+      showFloatingText(`+${pointsEarned} credits`, "score");
+    }
+  }
+
+  function buyItem(kind) {
+    const item = shopItems[kind];
+    if (!item || score < item.cost || shields <= 0) return;
+
+    score -= item.cost;
+    if (kind === "shield") {
+      shields += 1;
+      statusEl.textContent = "Shield recharged for 45 Space Credits.";
+      restartAnimation(shieldDome, "hit");
+      playAnimation(shieldDome, "shieldImpact 820ms ease-out");
+    } else if (kind === "freeze") {
+      freezeRays += 1;
+      statusEl.textContent = "Freeze ray stocked.";
+    } else if (kind === "bomb") {
+      bombs += 1;
+      statusEl.textContent = "Meteor bomb stocked.";
+    }
+    updateStats();
+  }
+
+  function resolveSkippedQuestion(message) {
+    resolving = true;
+    setAnswersDisabled(true);
+    cancelAnimationFrame(animationId);
+    frozenUntil = 0;
+    explodeMeteor(0, "Bomb!");
+    statusEl.textContent = message;
+    window.setTimeout(() => {
+      const spedUp = countResolvedQuestion();
+      nextMeteor();
+      if (spedUp) announceSpeedUp();
+    }, 980);
+  }
+
+  function useFreezeRay() {
+    if (!running || resolving || freezeRays <= 0) return;
+    freezeRays -= 1;
+    frozenUntil = performance.now() + 5000;
+    meteor.classList.add("frozen");
+    statusEl.textContent = "Freeze ray fired. Meteor paused for 5 seconds.";
+    updateStats();
+  }
+
+  function useBomb() {
+    if (!running || resolving || bombs <= 0) return;
+    bombs -= 1;
+    updateStats();
+    resolveSkippedQuestion("Bomb deployed. Question skipped.");
   }
 
   function crashIntoShield() {
@@ -254,7 +333,7 @@
       score += pointsEarned;
       fireBeam("hit");
       explodeMeteor(pointsEarned);
-      statusEl.textContent = "Direct hit.";
+      statusEl.textContent = `Direct hit. ${pointsEarned} Space Credits earned.`;
       updateStats();
       window.setTimeout(() => {
         const spedUp = countResolvedQuestion();
@@ -269,6 +348,17 @@
 
   function tick(time) {
     if (!running || resolving) return;
+    if (frozenUntil && time < frozenUntil) {
+      lastFrame = time;
+      animationId = requestAnimationFrame(tick);
+      return;
+    }
+    if (frozenUntil) {
+      frozenUntil = 0;
+      meteor.classList.remove("frozen");
+      statusEl.textContent = "Freeze ray wore off.";
+      updateStats();
+    }
     const delta = Math.min(40, time - lastFrame) / 1000;
     lastFrame = time;
     setMeteorPosition(meteorX, meteorY + fallSpeed * delta);
@@ -307,6 +397,9 @@
     questionsResolved = 0;
     speedLevel = 0;
     fallSpeed = 58;
+    freezeRays = 0;
+    bombs = 0;
+    frozenUntil = 0;
     currentAnswer = 0;
     setMeteorPosition(50, 28);
     clearEffectClasses();
@@ -331,5 +424,10 @@
 
   startButton.addEventListener("click", start);
   resetButton.addEventListener("click", reset);
+  buyShieldButton.addEventListener("click", () => buyItem("shield"));
+  buyFreezeButton.addEventListener("click", () => buyItem("freeze"));
+  buyBombButton.addEventListener("click", () => buyItem("bomb"));
+  useFreezeButton.addEventListener("click", useFreezeRay);
+  useBombButton.addEventListener("click", useBomb);
   reset();
 })();

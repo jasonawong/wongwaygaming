@@ -15,12 +15,39 @@
       </header>
       <main class="game-main">
         <aside class="info-panel">
-          <p>Choose the answer that matches the falling meteor. Each correct shot earns points and pushes the next meteor higher.</p>
+          <p>Choose the answer that matches the falling meteor. Each correct shot earns Space Credits and pushes the next meteor higher.</p>
           <div class="stat-grid">
-            <div class="stat"><span>Score</span><strong id="score">0</strong></div>
+            <div class="stat credit-stat"><span>Space Credits</span><strong id="score">0</strong></div>
             <div class="stat"><span>Shields</span><strong id="shields">3</strong></div>
             <div class="stat"><span>Streak</span><strong id="streak">0</strong></div>
-            <div class="stat"><span>Best</span><strong id="best">0</strong></div>
+            <div class="stat"><span>Best Credits</span><strong id="best">0</strong></div>
+          </div>
+          <div class="shop-panel" aria-label="Space Shop">
+            <div class="shop-heading">
+              <span>Space Shop</span>
+              <strong>Spend credits</strong>
+            </div>
+            <div class="shop-grid">
+              <button class="shop-item" id="buy-shield" type="button" data-cost="45">
+                <span class="shop-icon shield-icon" aria-hidden="true"></span>
+                <span><strong>Shield</strong><small>+1 shield</small></span>
+                <em>45</em>
+              </button>
+              <button class="shop-item" id="buy-freeze" type="button" data-cost="35">
+                <span class="shop-icon freeze-icon" aria-hidden="true"></span>
+                <span><strong>Freeze Ray</strong><small>Pause meteor</small></span>
+                <em>35</em>
+              </button>
+              <button class="shop-item" id="buy-bomb" type="button" data-cost="60">
+                <span class="shop-icon bomb-icon" aria-hidden="true"></span>
+                <span><strong>Bomb</strong><small>Skip question</small></span>
+                <em>60</em>
+              </button>
+            </div>
+            <div class="inventory-row">
+              <button class="inventory-button" id="use-freeze" type="button">Freeze <strong id="freeze-count">0</strong></button>
+              <button class="inventory-button" id="use-bomb" type="button">Bomb <strong id="bomb-count">0</strong></button>
+            </div>
           </div>
           <p class="status-line" id="status">Start a round to load the first meteor.</p>
           <div class="control-row">
