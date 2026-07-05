@@ -410,11 +410,13 @@ main {
 
 .tile-art,
 .dialog-art {
+  position: relative;
   display: block;
   border: 2px solid var(--ink);
   border-radius: 6px;
   background-color: #eef7f3;
   background-repeat: no-repeat;
+  overflow: hidden;
 }
 
 .tile-art {
@@ -451,18 +453,90 @@ main {
 .turbo .tile-art,
 .turbo.dialog-art {
   background:
-    linear-gradient(90deg, transparent 44%, #f5f2ea 44% 47%, transparent 47% 53%, #f5f2ea 53% 56%, transparent 56%),
-    radial-gradient(circle at 50% 74%, var(--coral) 0 13%, transparent 14%),
-    linear-gradient(180deg, #43515a 0 100%);
+    radial-gradient(ellipse at 50% 35%, rgba(123, 243, 255, 0.38) 0 7%, transparent 31%),
+    linear-gradient(118deg, transparent 0 24%, rgba(255, 51, 214, 0.75) 25% 26%, transparent 27%),
+    linear-gradient(62deg, transparent 0 24%, rgba(78, 240, 255, 0.78) 25% 26%, transparent 27%),
+    linear-gradient(118deg, transparent 0 41%, rgba(78, 240, 255, 0.52) 42% 43%, transparent 44%),
+    linear-gradient(62deg, transparent 0 41%, rgba(255, 51, 214, 0.52) 42% 43%, transparent 44%),
+    repeating-linear-gradient(0deg, transparent 0 13%, rgba(102, 247, 255, 0.58) 14% 15%, transparent 16% 24%),
+    linear-gradient(180deg, #02030a 0 42%, #06142a 43% 58%, #080714 59% 100%);
+  box-shadow: inset 0 -24px 34px rgba(0, 0, 0, 0.48), inset 0 0 34px rgba(77, 238, 255, 0.28);
 }
 
 .meteor .tile-art,
 .meteor.dialog-art {
   background:
-    radial-gradient(circle at 72% 22%, var(--gold) 0 10%, transparent 11%),
-    radial-gradient(circle at 42% 48%, var(--coral) 0 15%, transparent 16%),
-    radial-gradient(circle at 24% 76%, var(--violet) 0 12%, transparent 13%),
-    #182531;
+    radial-gradient(circle at 76% 20%, #ffd166 0 5%, #ff7a3d 6% 11%, transparent 12%),
+    radial-gradient(circle at 35% 72%, rgba(101, 247, 255, 0.34) 0 23%, transparent 24%),
+    linear-gradient(144deg, transparent 0 44%, rgba(255, 255, 255, 0.88) 45% 47%, transparent 48%),
+    radial-gradient(circle at 40% 78%, #1fa6b2 0 21%, #236c9d 22% 31%, transparent 32%),
+    radial-gradient(circle at 82% 17%, rgba(255, 84, 84, 0.45) 0 18%, transparent 30%),
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.72) 0 1.2%, transparent 1.8%),
+    radial-gradient(circle at 56% 16%, rgba(255, 255, 255, 0.65) 0 1%, transparent 1.7%),
+    linear-gradient(180deg, #071225 0 100%);
+  box-shadow: inset 0 -22px 32px rgba(0, 0, 0, 0.42), inset 0 0 34px rgba(64, 222, 255, 0.2);
+}
+
+.turbo .tile-art::before,
+.turbo.dialog-art::before {
+  content: "";
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  bottom: 9%;
+  height: 34%;
+  background:
+    linear-gradient(90deg, transparent 0 8%, #61f7ff 9% 14%, transparent 15% 85%, #ff38d4 86% 91%, transparent 92%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0 27%, #c7d5dc 28% 50%, #06101d 51% 100%);
+  clip-path: polygon(50% 0, 82% 18%, 100% 60%, 81% 86%, 18% 86%, 0 60%, 18% 18%);
+  filter: drop-shadow(0 8px 0 rgba(0, 0, 0, 0.5)) drop-shadow(0 0 14px rgba(95, 247, 255, 0.65));
+}
+
+.turbo .tile-art::after,
+.turbo.dialog-art::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -2%;
+  height: 56%;
+  background:
+    linear-gradient(104deg, transparent 0 33%, rgba(95, 247, 255, 0.85) 34% 35%, transparent 36%),
+    linear-gradient(76deg, transparent 0 33%, rgba(255, 56, 212, 0.82) 34% 35%, transparent 36%),
+    radial-gradient(ellipse at 50% 100%, rgba(99, 247, 255, 0.6) 0 11%, transparent 42%);
+  opacity: 0.86;
+  mix-blend-mode: screen;
+}
+
+.meteor .tile-art::before,
+.meteor.dialog-art::before {
+  content: "";
+  position: absolute;
+  left: 18%;
+  bottom: 16%;
+  width: 36%;
+  height: 38%;
+  background:
+    radial-gradient(circle at 50% 20%, #5ff7ff 0 8%, #06111d 9% 15%, transparent 16%),
+    linear-gradient(90deg, transparent 0 7%, #f4fbf8 8% 15%, #f04a62 16% 25%, #a6d0bf 26% 74%, #f04a62 75% 84%, #f4fbf8 85% 92%, transparent 93%),
+    linear-gradient(180deg, #f04a62 0 16%, #c8dfd0 17% 68%, #071827 69% 100%);
+  clip-path: polygon(50% 0, 61% 19%, 90% 43%, 100% 72%, 67% 62%, 57% 100%, 43% 100%, 33% 62%, 0 72%, 10% 43%, 39% 19%);
+  filter: drop-shadow(0 6px 0 rgba(0, 0, 0, 0.5)) drop-shadow(0 0 12px rgba(95, 247, 255, 0.55));
+}
+
+.meteor .tile-art::after,
+.meteor.dialog-art::after {
+  content: "";
+  position: absolute;
+  left: 48%;
+  top: 30%;
+  width: 44%;
+  height: 17%;
+  background:
+    radial-gradient(circle at 100% 50%, #ffd166 0 12%, #ff7048 13% 28%, transparent 29%),
+    linear-gradient(90deg, rgba(95, 247, 255, 0.95), rgba(255, 255, 255, 0.84), transparent 74%);
+  transform: rotate(-20deg);
+  filter: drop-shadow(0 0 10px rgba(95, 247, 255, 0.7));
 }
 
 .cupcake .tile-art,

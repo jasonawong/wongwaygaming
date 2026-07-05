@@ -15,21 +15,43 @@
       </header>
       <main class="game-main">
         <aside class="info-panel">
-          <p>Flip two cards at a time and match every crystal pair before the timer reaches zero.</p>
+          <p>Flip two cards at a time and match each color word to the gem with the same color.</p>
           <div class="stat-grid">
             <div class="stat"><span>Turns</span><strong id="turns">0</strong></div>
             <div class="stat"><span>Pairs</span><strong id="pairs">0/6</strong></div>
             <div class="stat"><span>Time</span><strong id="time">60</strong></div>
             <div class="stat"><span>Best</span><strong id="best">--</strong></div>
           </div>
-          <p class="status-line" id="status">Memorize the shimmer.</p>
+          <p class="status-line" id="status">Match words to gems.</p>
           <div class="control-row">
             <button class="game-button" id="start-button" type="button">Start</button>
             <button class="game-button secondary" id="reset-button" type="button">Shuffle</button>
           </div>
+          <div class="power-panel" aria-label="Crystal powers">
+            <button class="game-button power-button" id="freeze-button" type="button">Freeze Time</button>
+            <button class="game-button power-button secondary" id="hint-button" type="button">Hint</button>
+          </div>
         </aside>
         <section class="stage memory-stage" aria-label="Crystal Match game">
           <div class="memory-board" id="board"></div>
+          <div class="freeze-effect" id="freeze-effect" aria-hidden="true">
+            <div class="freeze-countdown"><span id="freeze-timer">10</span></div>
+            <span class="ice-crystal ice-one"></span>
+            <span class="ice-crystal ice-two"></span>
+            <span class="ice-crystal ice-three"></span>
+            <span class="ice-crystal ice-four"></span>
+          </div>
+          <form class="scramble-panel" id="scramble-panel" hidden>
+            <p class="scramble-title" id="scramble-title">Spell the word</p>
+            <div class="scramble-letters" id="scramble-letters" aria-label="Scrambled letters"></div>
+            <label class="scramble-label" for="scramble-answer">Put the letters in order</label>
+            <div class="scramble-row">
+              <input id="scramble-answer" type="text" autocomplete="off" spellcheck="false">
+              <button class="game-button" type="submit">Check</button>
+            </div>
+            <button class="text-button" id="scramble-cancel" type="button">Cancel</button>
+          </form>
+          <div class="game-over-overlay" id="game-over-overlay" aria-hidden="true">Game Over</div>
         </section>
       </main>
     </div>
