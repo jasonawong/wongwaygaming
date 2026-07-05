@@ -1,12 +1,91 @@
 body {
-  --accent: #f25f5c;
+  --accent: #5ff7ff;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(95, 247, 255, 0.18), transparent 26%),
+    radial-gradient(circle at 84% 20%, rgba(255, 56, 212, 0.14), transparent 28%),
+    linear-gradient(180deg, #06101f, #02040a 58%, #050712);
+}
+
+.game-header {
+  border-color: rgba(95, 247, 255, 0.24);
+  background: rgba(2, 4, 10, 0.82);
+}
+
+.game-title,
+.back-link {
+  color: #eefcff;
+}
+
+.back-link {
+  border-color: rgba(95, 247, 255, 0.76);
+  background: rgba(7, 20, 35, 0.92);
+  box-shadow: 0 0 20px rgba(95, 247, 255, 0.18);
+}
+
+.info-panel {
+  border-color: rgba(95, 247, 255, 0.72);
+  background:
+    linear-gradient(135deg, rgba(95, 247, 255, 0.1), transparent 40%),
+    rgba(4, 10, 20, 0.92);
+  box-shadow:
+    0 0 0 2px rgba(255, 56, 212, 0.16),
+    0 0 34px rgba(95, 247, 255, 0.18);
+  color: #eefcff;
+}
+
+.info-panel p,
+.status-line {
+  color: #bfeaf2;
+}
+
+.stat {
+  border-color: rgba(95, 247, 255, 0.26);
+  background: rgba(4, 19, 34, 0.94);
+  box-shadow: inset 0 0 18px rgba(95, 247, 255, 0.06);
+}
+
+.stat span {
+  color: #7ff6ff;
+}
+
+.stat strong {
+  color: #ffffff;
+  text-shadow: 0 0 16px rgba(95, 247, 255, 0.58);
 }
 
 .stage {
-  background: #26313a;
+  border-color: rgba(95, 247, 255, 0.82);
+  background: #02040a;
+  box-shadow:
+    0 0 0 2px rgba(255, 56, 212, 0.2),
+    0 0 42px rgba(95, 247, 255, 0.3);
 }
 
-#start-button {
-  background: var(--accent);
-  color: #fff;
+canvas.stage {
+  height: clamp(430px, 68vh, 675px);
+  touch-action: manipulation;
+}
+
+.game-button {
+  border-color: rgba(95, 247, 255, 0.8);
+  background: #5ff7ff;
+  box-shadow: 0 0 18px rgba(95, 247, 255, 0.22);
+  color: #02040a;
+}
+
+.game-button.secondary {
+  background: rgba(7, 20, 35, 0.96);
+  color: #eefcff;
+}
+
+.game-button:hover,
+.game-button:focus-visible {
+  outline: none;
+  filter: brightness(1.15);
+}
+
+@media (max-width: 620px) {
+  canvas.stage {
+    height: 430px;
+  }
 }
