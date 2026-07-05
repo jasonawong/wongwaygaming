@@ -8,6 +8,7 @@
   const dialogGoal = document.querySelector("#dialog-goal");
   const dialogControls = document.querySelector("#dialog-controls");
   const dialogPlay = document.querySelector("#dialog-play");
+  const globeScene = document.querySelector("[data-globe-scene]");
 
   function buildTile(game) {
     const button = document.createElement("button");
@@ -71,4 +72,25 @@
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) closeGameDialog();
   });
+
+  if (globeScene) {
+    globeScene.addEventListener("pointermove", (event) => {
+      const rect = globeScene.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = (event.clientY - rect.top) / rect.height;
+      const tiltX = (x - 0.5) * 18;
+      const tiltY = (0.5 - y) * 14;
+      globeScene.style.setProperty("--tilt-x", `${tiltX.toFixed(2)}deg`);
+      globeScene.style.setProperty("--tilt-y", `${tiltY.toFixed(2)}deg`);
+      globeScene.style.setProperty("--cursor-light-x", `${(x * 100).toFixed(1)}%`);
+      globeScene.style.setProperty("--cursor-light-y", `${(y * 100).toFixed(1)}%`);
+    });
+
+    globeScene.addEventListener("pointerleave", () => {
+      globeScene.style.setProperty("--tilt-x", "0deg");
+      globeScene.style.setProperty("--tilt-y", "0deg");
+      globeScene.style.setProperty("--cursor-light-x", "32%");
+      globeScene.style.setProperty("--cursor-light-y", "28%");
+    });
+  }
 })();
