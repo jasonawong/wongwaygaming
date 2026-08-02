@@ -169,6 +169,90 @@
   animation: bannerPop 1700ms ease-out;
 }
 
+.speed-meter {
+  position: absolute;
+  top: 96px;
+  right: 22px;
+  z-index: 12;
+  display: grid;
+  width: 66px;
+  gap: 8px;
+  justify-items: center;
+  border: 3px solid #07101d;
+  border-radius: 8px;
+  padding: 10px 8px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.26), transparent 44%),
+    rgba(8, 19, 34, 0.9);
+  box-shadow:
+    0 7px 0 #07101d,
+    0 0 24px rgba(87, 242, 255, 0.26);
+  color: #f8fafc;
+  pointer-events: none;
+}
+
+.speed-meter-label {
+  color: #9ee7ff;
+  font-size: 0.62rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.speed-track {
+  position: relative;
+  display: flex;
+  width: 22px;
+  height: 156px;
+  align-items: end;
+  border: 3px solid #030712;
+  border-radius: 999px;
+  padding: 3px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.14), transparent),
+    #102034;
+  box-shadow:
+    inset 0 0 12px rgba(0,0,0,0.4),
+    0 0 16px rgba(87, 242, 255, 0.16);
+  overflow: hidden;
+}
+
+.speed-track::before {
+  position: absolute;
+  inset: 8px 6px;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, transparent 0 18%, rgba(255,255,255,0.42) 19% 20%, transparent 21% 38%, rgba(255,255,255,0.34) 39% 40%, transparent 41% 58%, rgba(255,255,255,0.28) 59% 60%, transparent 61% 78%, rgba(255,255,255,0.22) 79% 80%, transparent 81%);
+  content: "";
+}
+
+.speed-fill {
+  position: relative;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 46%;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, #ffec8b 0%, #ff8d3a 44%, #57f2ff 100%);
+  box-shadow:
+    0 0 12px rgba(255, 210, 77, 0.7),
+    0 0 22px rgba(87, 242, 255, 0.32);
+  transition: height 260ms ease-out;
+}
+
+.speed-meter strong {
+  min-width: 42px;
+  border: 2px solid #030712;
+  border-radius: 999px;
+  padding: 3px 6px;
+  background: #ffd24d;
+  color: #07101d;
+  font-size: 0.78rem;
+  line-height: 1.1;
+  text-align: center;
+}
+
 .shop-panel {
   display: grid;
   gap: 10px;
@@ -1336,6 +1420,24 @@
 }
 
 @media (max-width: 620px) {
+  .speed-meter {
+    top: 78px;
+    right: 12px;
+    width: 56px;
+    gap: 6px;
+    padding: 8px 6px;
+  }
+
+  .speed-track {
+    width: 18px;
+    height: 112px;
+  }
+
+  .speed-meter strong {
+    min-width: 38px;
+    font-size: 0.7rem;
+  }
+
   .space-plane {
     width: 210px;
     transform: translateX(-50%) scale(0.9);

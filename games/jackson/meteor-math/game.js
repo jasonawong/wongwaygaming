@@ -9,6 +9,9 @@
   const gameOverBanner = document.querySelector("#game-over-banner");
   const shieldDome = document.querySelector("#shield-dome");
   const speedBanner = document.querySelector("#speed-banner");
+  const speedMeter = document.querySelector("#speed-meter");
+  const speedFill = document.querySelector("#speed-fill");
+  const speedReadout = document.querySelector("#speed-readout");
   const problemEl = document.querySelector("#problem");
   const answersEl = document.querySelector("#answers");
   const scoreEl = document.querySelector("#score");
@@ -45,10 +48,13 @@
   let meteorX = 50;
   let lastFrame = 0;
   let animationId = 0;
-  let questionsResolved = 0;
+  let successfulAnswers = 0;
   let speedLevel = 0;
-  let fallSpeed = 58;
+  let fallSpeed = 64;
   let best = Number(localStorage.getItem("meteorMathBest") || 0);
+  const startingFallSpeed = 64;
+  const speedIncreasePerCorrect = 3;
+  const maxMeterFallSpeed = 145;
   const crashImpactDelay = 680;
   const crashResolveDelay = 1650;
   bestEl.textContent = best;
@@ -126,6 +132,12 @@
     scoreEl.textContent = score;
     shieldsEl.textContent = shields;
     streakEl.textContent = streak;
+    const speedRatio = fallSpeed / startingFallSpeed;
+    const speedPercent = Math.min(100, Math.round((fallSpeed / maxMeterFallSpeed) * 100));
+    speedFill.style.height = `${speedPercent}%`;
+    speedReadout.textContent = `${speedRatio.toFixed(1)}x`;
+    speedMeter.setAttribute("aria-valuenow", speedRatio.toFixed(1));
+    speedMeter.setAttribute("aria-valuetext", `${speedRatio.toFixed(1)} times starting speed`);
     freezeCountEl.textContent = freezeRays;
     bombCountEl.textContent = bombs;
     buyShieldButton.disabled = score < shopItems.shield.cost || shields <= 0;
@@ -173,16 +185,16 @@
   }
 
   function updateSpeedIfNeeded() {
-    if (questionsResolved > 0 && questionsResolved % 5 === 0) {
+    if (successfulAnswers > 0 && successfulAnswers % 5 === 0) {
       speedLevel += 1;
-      fallSpeed += 16;
       return true;
     }
     return false;
   }
 
-  function countResolvedQuestion() {
-    questionsResolved += 1;
+  function countSuccessfulAnswer() {
+    successfulAnswers += 1;
+    fallSpeed += speedIncreasePerCorrect;
     return updateSpeedIfNeeded();
   }
 
@@ -252,9 +264,7 @@
     explodeMeteor(0, "Bomb!");
     statusEl.textContent = message;
     window.setTimeout(() => {
-      const spedUp = countResolvedQuestion();
       nextMeteor();
-      if (spedUp) announceSpeedUp();
     }, 980);
   }
 
@@ -309,14 +319,12 @@
     }
 
     window.setTimeout(() => {
-      const spedUp = countResolvedQuestion();
       if (shields <= 0) {
         stop();
         meteor.classList.add("hidden");
         showGameOver();
       } else {
         nextMeteor();
-        if (spedUp) announceSpeedUp();
       }
     }, crashResolveDelay);
   }
@@ -336,7 +344,7 @@
       statusEl.textContent = `Direct hit. ${pointsEarned} Space Credits earned.`;
       updateStats();
       window.setTimeout(() => {
-        const spedUp = countResolvedQuestion();
+        const spedUp = countSuccessfulAnswer();
         nextMeteor();
         if (spedUp) announceSpeedUp();
       }, 1180);
@@ -394,9 +402,9 @@
     score = 0;
     shields = 3;
     streak = 0;
-    questionsResolved = 0;
+    successfulAnswers = 0;
     speedLevel = 0;
-    fallSpeed = 58;
+    fallSpeed = startingFallSpeed;
     freezeRays = 0;
     bombs = 0;
     frozenUntil = 0;
