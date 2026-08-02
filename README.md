@@ -10,6 +10,7 @@ A static browser arcade designed for GitHub Pages. The landing page lists games 
 - `games/jackson/meteor-math/` is a standalone math arcade game.
 - `games/olivia/cupcake-cascade/` is a standalone catch game.
 - `games/olivia/crystal-match/` is a standalone memory game.
+- `games/grandparents/halo-halo-sudoku/` is a standalone dessert Sudoku game.
 - `games/shared/` contains common game-page shell styles.
 
 Each game folder has its own `index.html`, `styles.css`, and `game.js`, so it can be expanded or replaced as its own browser application.

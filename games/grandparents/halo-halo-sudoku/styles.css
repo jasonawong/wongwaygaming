@@ -1,0 +1,336 @@
+body {
+  --halo-ube: #7845a8;
+  --halo-jelly: #e84f8a;
+  --halo-bean: #a9583e;
+  --halo-flan: #ffd965;
+  --halo-ice: #d7f4f8;
+  --halo-blue: #4aaec7;
+  background:
+    radial-gradient(circle at 14% 16%, rgba(255, 217, 101, 0.3), transparent 24%),
+    radial-gradient(circle at 86% 20%, rgba(232, 79, 138, 0.22), transparent 26%),
+    linear-gradient(90deg, rgba(74, 174, 199, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(74, 174, 199, 0.07) 1px, transparent 1px),
+    #fff8ef;
+}
+
+.game-header {
+  background: rgba(255, 248, 239, 0.9);
+}
+
+.back-link,
+.game-button,
+.info-panel,
+.stage {
+  box-shadow: 7px 7px 0 var(--ink);
+}
+
+.game-button {
+  background: var(--halo-flan);
+}
+
+.game-button.secondary {
+  background: #fff;
+}
+
+.halo-stage {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: clamp(14px, 2vw, 20px);
+  align-items: center;
+  justify-items: center;
+  padding: clamp(18px, 4vw, 34px);
+  background:
+    radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.88) 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 26%, rgba(255, 217, 101, 0.48) 0 6px, transparent 7px),
+    linear-gradient(160deg, rgba(215, 244, 248, 0.85), transparent 46%),
+    #fff1e8;
+  overflow: hidden;
+}
+
+.dessert-scene {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dessert-glass {
+  position: absolute;
+  right: clamp(12px, 4vw, 46px);
+  bottom: 38px;
+  width: clamp(86px, 14vw, 138px);
+  height: clamp(120px, 21vw, 194px);
+  border: 4px solid rgba(23, 32, 42, 0.52);
+  border-top: 0;
+  border-radius: 0 0 48px 48px;
+  background:
+    radial-gradient(circle at 42% 16%, var(--halo-ube) 0 10%, transparent 11%),
+    radial-gradient(circle at 68% 28%, var(--halo-jelly) 0 8%, transparent 9%),
+    radial-gradient(circle at 34% 52%, var(--halo-flan) 0 9%, transparent 10%),
+    radial-gradient(circle at 66% 68%, var(--halo-bean) 0 9%, transparent 10%),
+    linear-gradient(180deg, rgba(255,255,255,0.62), rgba(215,244,248,0.22));
+  opacity: 0.45;
+}
+
+.dessert-spoon {
+  position: absolute;
+  right: clamp(76px, 12vw, 150px);
+  bottom: clamp(120px, 18vw, 190px);
+  width: 14px;
+  height: 190px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #c8d5d9, #ffffff 48%, #96a5a9);
+  opacity: 0.4;
+  transform: rotate(22deg);
+}
+
+.dessert-spoon::before {
+  position: absolute;
+  top: -38px;
+  left: 50%;
+  width: 38px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f8fdff, #a6b6bc);
+  content: "";
+  transform: translateX(-50%);
+}
+
+.sudoku-board {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: min(100%, 520px);
+  aspect-ratio: 1;
+  grid-template-columns: repeat(4, 1fr);
+  border: 4px solid var(--ink);
+  border-radius: 8px;
+  background: var(--ink);
+  box-shadow:
+    9px 9px 0 var(--ink),
+    0 0 0 10px rgba(255, 255, 255, 0.42);
+  overflow: hidden;
+}
+
+.sudoku-cell {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+  border: 1px solid rgba(23, 32, 42, 0.52);
+  background: rgba(255, 253, 246, 0.96);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+}
+
+.sudoku-cell:nth-child(2),
+.sudoku-cell:nth-child(6),
+.sudoku-cell:nth-child(10),
+.sudoku-cell:nth-child(14) {
+  border-right-width: 4px;
+}
+
+.sudoku-cell:nth-child(n + 5):nth-child(-n + 8) {
+  border-bottom-width: 4px;
+}
+
+.sudoku-cell.related {
+  background: #f6fbfb;
+}
+
+.sudoku-cell.same:not(.selected) {
+  background: #fff1c9;
+}
+
+.sudoku-cell.selected {
+  z-index: 1;
+  background: #d9f2f6;
+  box-shadow: inset 0 0 0 4px var(--halo-blue);
+}
+
+.sudoku-cell.given {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.52), transparent 42%),
+    #f8e8f1;
+}
+
+.sudoku-cell.correct {
+  animation: correctPop 480ms ease-out;
+}
+
+.sudoku-cell.wrong {
+  animation: wrongShake 360ms ease-out;
+}
+
+.sudoku-board.complete .sudoku-cell {
+  animation: completeGlow 900ms ease-out;
+}
+
+.sudoku-cell strong {
+  margin-top: 4px;
+  font-size: clamp(0.62rem, 1.6vw, 0.86rem);
+  line-height: 1;
+}
+
+.ingredient {
+  position: relative;
+  display: block;
+  width: clamp(34px, 8vw, 58px);
+  height: clamp(34px, 8vw, 58px);
+  border: 3px solid var(--ink);
+  box-shadow: inset -5px -6px 0 rgba(0, 0, 0, 0.14);
+}
+
+.ingredient.ube {
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 24%, rgba(255,255,255,0.7) 0 12%, transparent 13%),
+    linear-gradient(135deg, #9b6fd0, var(--halo-ube));
+}
+
+.ingredient.jelly {
+  border-radius: 10px 10px 16px 16px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.5), transparent 34%),
+    repeating-linear-gradient(90deg, transparent 0 12%, rgba(255,255,255,0.22) 13% 19%),
+    var(--halo-jelly);
+}
+
+.ingredient.beans {
+  border-radius: 52% 46% 58% 42%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255,255,255,0.48) 0 9%, transparent 10%),
+    linear-gradient(135deg, #cb7658, var(--halo-bean));
+}
+
+.ingredient.flan {
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, #a85734 0 18%, transparent 19%),
+    linear-gradient(135deg, rgba(255,255,255,0.56), transparent 42%),
+    var(--halo-flan);
+}
+
+.empty-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(23, 32, 42, 0.16);
+}
+
+.ingredient-tray {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: min(100%, 620px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ingredient-button {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  justify-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 10px 6px;
+  background: #ffffff;
+  box-shadow: 5px 5px 0 var(--ink);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+}
+
+.ingredient-button .ingredient {
+  width: 42px;
+  height: 42px;
+}
+
+.ingredient-button small {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--halo-ice);
+  color: #275861;
+  font-size: 0.76rem;
+}
+
+.ingredient-button:hover,
+.ingredient-button:focus-visible {
+  outline: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+
+@keyframes correctPop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    background: #e7fff1;
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes wrongShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    background: #ffe1e1;
+    transform: translateX(-8px);
+  }
+  50% {
+    transform: translateX(8px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
+@keyframes completeGlow {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.16) saturate(1.18);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@media (max-width: 620px) {
+  .halo-stage {
+    padding: 14px;
+  }
+
+  .dessert-glass,
+  .dessert-spoon {
+    display: none;
+  }
+
+  .sudoku-board {
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  .ingredient-tray {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ingredient-button {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    text-align: left;
+  }
+}

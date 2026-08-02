@@ -51,4 +51,17 @@ window.WONG_WAY_GAMES = [
     href: "games/olivia/crystal-match/",
     theme: "crystal",
   },
+  {
+    id: "halo-halo-sudoku",
+    group: "grandparents",
+    groupLabel: "Grandparent Games",
+    title: "Halo-Halo Sudoku",
+    tagline: "Fill every bowl with ube, jelly, sweet beans, and leche flan.",
+    description:
+      "A gentle dessert Sudoku with halo-halo ingredients instead of numbers, built for relaxed puzzle solving.",
+    goal: "Place each ingredient once in every row, column, and 2-by-2 bowl section.",
+    controls: "Click a bowl square, then choose an ingredient. Number keys 1-4 work too.",
+    href: "games/grandparents/halo-halo-sudoku/",
+    theme: "halohalo",
+  },
 ];

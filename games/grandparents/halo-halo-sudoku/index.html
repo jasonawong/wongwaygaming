@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Halo-Halo Sudoku | Wong Way Gaming</title>
+    <link rel="stylesheet" href="../../shared/game-shell.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="game-page">
+      <header class="game-header">
+        <a class="back-link" href="../../../">&larr; Arcade</a>
+        <h1 class="game-title">Halo-Halo Sudoku</h1>
+      </header>
+      <main class="game-main">
+        <aside class="info-panel">
+          <p>Fill the halo-halo bowl so every row, column, and 2-by-2 section has one of each ingredient.</p>
+          <div class="stat-grid">
+            <div class="stat"><span>Filled</span><strong id="filled">0/16</strong></div>
+            <div class="stat"><span>Mistakes</span><strong id="mistakes">0</strong></div>
+            <div class="stat"><span>Time</span><strong id="time">0:00</strong></div>
+            <div class="stat"><span>Best</span><strong id="best">--</strong></div>
+          </div>
+          <p class="status-line" id="status">Choose a square, then add an ingredient.</p>
+          <div class="control-row">
+            <button class="game-button" id="new-button" type="button">New Bowl</button>
+            <button class="game-button secondary" id="hint-button" type="button">Hint</button>
+            <button class="game-button secondary" id="clear-button" type="button">Clear</button>
+          </div>
+        </aside>
+        <section class="stage halo-stage" aria-label="Halo-Halo Sudoku game">
+          <div class="dessert-scene" aria-hidden="true">
+            <span class="dessert-spoon"></span>
+            <span class="dessert-glass"></span>
+          </div>
+          <div class="sudoku-board" id="board" aria-label="Sudoku board"></div>
+          <div class="ingredient-tray" id="ingredient-tray" aria-label="Ingredient choices"></div>
+        </section>
+      </main>
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>
