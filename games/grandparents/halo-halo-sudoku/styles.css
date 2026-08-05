@@ -100,9 +100,9 @@ body {
   position: relative;
   z-index: 2;
   display: grid;
-  width: min(100%, 520px);
+  width: min(100%, 640px);
   aspect-ratio: 1;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(9, 1fr);
   border: 4px solid var(--ink);
   border-radius: 8px;
   background: var(--ink);
@@ -125,14 +125,13 @@ body {
   font: inherit;
 }
 
-.sudoku-cell:nth-child(2),
-.sudoku-cell:nth-child(6),
-.sudoku-cell:nth-child(10),
-.sudoku-cell:nth-child(14) {
+.sudoku-cell:nth-child(9n + 3),
+.sudoku-cell:nth-child(9n + 6) {
   border-right-width: 4px;
 }
 
-.sudoku-cell:nth-child(n + 5):nth-child(-n + 8) {
+.sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
+.sudoku-cell:nth-child(n + 46):nth-child(-n + 54) {
   border-bottom-width: 4px;
 }
 
@@ -169,18 +168,18 @@ body {
 }
 
 .sudoku-cell strong {
-  margin-top: 4px;
-  font-size: clamp(0.62rem, 1.6vw, 0.86rem);
+  margin-top: 2px;
+  font-size: clamp(0.42rem, 1.25vw, 0.72rem);
   line-height: 1;
 }
 
 .ingredient {
   position: relative;
   display: block;
-  width: clamp(34px, 8vw, 58px);
-  height: clamp(34px, 8vw, 58px);
-  border: 3px solid var(--ink);
-  box-shadow: inset -5px -6px 0 rgba(0, 0, 0, 0.14);
+  width: clamp(17px, 4.2vw, 38px);
+  height: clamp(17px, 4.2vw, 38px);
+  border: 2px solid var(--ink);
+  box-shadow: inset -3px -4px 0 rgba(0, 0, 0, 0.14);
 }
 
 .ingredient.ube {
@@ -213,6 +212,40 @@ body {
     var(--halo-flan);
 }
 
+.ingredient.leche {
+  border-radius: 50% 50% 42% 42%;
+  background:
+    radial-gradient(circle at 36% 28%, rgba(255,255,255,0.88) 0 14%, transparent 15%),
+    linear-gradient(135deg, #fffefa, #e6d8bf);
+}
+
+.ingredient.langka {
+  border-radius: 42% 58% 42% 58%;
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255,255,255,0.5) 0 10%, transparent 11%),
+    linear-gradient(135deg, #ffd957, #ecad2e);
+}
+
+.ingredient.coconut {
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 48% 45%, #fffdf3 0 39%, transparent 40%),
+    linear-gradient(135deg, #a56a43, #6f3b2a);
+}
+
+.ingredient.corn {
+  border-radius: 42% 42% 52% 52%;
+  background:
+    repeating-linear-gradient(90deg, #ffc938 0 24%, #f4a922 25% 34%);
+}
+
+.ingredient.banana {
+  border-radius: 50% 14px 50% 14px;
+  background:
+    linear-gradient(135deg, #fff5a5, #efc72d);
+  transform: rotate(-24deg);
+}
+
 .empty-dot {
   width: 12px;
   height: 12px;
@@ -224,8 +257,8 @@ body {
   position: relative;
   z-index: 2;
   display: grid;
-  width: min(100%, 620px);
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(100%, 640px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -246,8 +279,8 @@ body {
 }
 
 .ingredient-button .ingredient {
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
 }
 
 .ingredient-button small {
@@ -324,13 +357,13 @@ body {
     box-shadow: 6px 6px 0 var(--ink);
   }
 
-  .ingredient-tray {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .ingredient-button {
+    padding: 8px 4px;
+    font-size: 0.8rem;
   }
 
-  .ingredient-button {
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    text-align: left;
+  .ingredient-button .ingredient {
+    width: 28px;
+    height: 28px;
   }
 }
