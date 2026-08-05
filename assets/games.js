@@ -26,6 +26,19 @@ window.WONG_WAY_GAMES = [
     theme: "meteor",
   },
   {
+    id: "miner",
+    group: "jackson",
+    groupLabel: "Jackson Games",
+    title: "Miner",
+    tagline: "Explore, build, and meet a blocky world full of animal families.",
+    description:
+      "A first-person 3D sandbox with rolling voxel terrain, editable blocks, caves to uncover, and adult and baby animals roaming together.",
+    goal: "Roam the world, mine its blocks, and build anything you can imagine.",
+    controls: "WASD to move, mouse to look, Space to jump, left click to break, right click to place, and 1-7 to choose blocks.",
+    href: "games/jackson/miner/",
+    theme: "miner",
+  },
+  {
     id: "cupcake-cascade",
     group: "olivia",
     groupLabel: "Olivia Games",
