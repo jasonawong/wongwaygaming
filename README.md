@@ -8,12 +8,13 @@ A static browser arcade designed for GitHub Pages. The landing page lists games 
 - `assets/` contains shared landing-page styles and game metadata.
 - `games/jackson/turbo-trails/` is a standalone lane-dodging game.
 - `games/jackson/meteor-math/` is a standalone math arcade game.
+- `games/jackson/miner/` is a self-contained first-person voxel building game.
 - `games/olivia/cupcake-cascade/` is a standalone catch game.
 - `games/olivia/crystal-match/` is a standalone memory game.
 - `games/grandparents/halo-halo-sudoku/` is a standalone dessert Sudoku game.
 - `games/shared/` contains common game-page shell styles.
 
-Each game folder has its own `index.html`, `styles.css`, and `game.js`, so it can be expanded or replaced as its own browser application.
+Most game folders have their own `index.html`, `styles.css`, and `game.js`, so they can be expanded or replaced as standalone browser applications. Miner keeps its styles and JavaScript inside one HTML file.
 
 ## Run Locally
 
