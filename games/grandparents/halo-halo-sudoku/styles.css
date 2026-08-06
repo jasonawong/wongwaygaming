@@ -343,6 +343,62 @@ body {
   }
 }
 
+/* Keep the full game in view on laptop-sized screens. */
+@media (min-width: 861px) {
+  .game-page {
+    height: 100dvh;
+    min-height: 0;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .game-main {
+    min-height: 0;
+    grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+    gap: clamp(18px, 2.5vw, 32px);
+    padding: clamp(12px, 2vh, 22px) clamp(18px, 3vw, 40px);
+  }
+
+  .info-panel {
+    max-height: 100%;
+    overflow: auto;
+  }
+
+  .halo-stage {
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) minmax(170px, 260px);
+    grid-template-rows: minmax(0, 1fr);
+    gap: clamp(14px, 2vw, 24px);
+    padding: clamp(12px, 2vh, 22px);
+  }
+
+  .sudoku-board {
+    width: min(100%, calc(100dvh - 150px));
+  }
+
+  .ingredient-tray {
+    width: 100%;
+    align-self: center;
+    gap: 8px;
+  }
+
+  .ingredient-button {
+    gap: 3px;
+    padding: 7px 3px;
+    font-size: clamp(0.7rem, 0.9vw, 0.86rem);
+  }
+
+  .ingredient-button .ingredient {
+    width: clamp(25px, 2.4vw, 32px);
+    height: clamp(25px, 2.4vw, 32px);
+  }
+
+  .ingredient-button small {
+    width: 21px;
+    height: 21px;
+    font-size: 0.7rem;
+  }
+}
+
 @media (max-width: 620px) {
   .halo-stage {
     padding: 14px;
