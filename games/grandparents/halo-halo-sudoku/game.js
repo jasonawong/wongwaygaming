@@ -1,6 +1,8 @@
 (function () {
   const boardEl = document.querySelector("#board");
   const trayEl = document.querySelector("#ingredient-tray");
+  const difficultyScreenEl = document.querySelector("#difficulty-screen");
+  const instructionsEl = document.querySelector("#instructions");
   const filledEl = document.querySelector("#filled");
   const mistakesEl = document.querySelector("#mistakes");
   const timeEl = document.querySelector("#time");
@@ -9,10 +11,9 @@
   const newButton = document.querySelector("#new-button");
   const hintButton = document.querySelector("#hint-button");
   const clearButton = document.querySelector("#clear-button");
+  const difficultyButton = document.querySelector("#difficulty-button");
 
-  const size = 9;
-  const sectionSize = 3;
-  const ingredients = [
+  const allIngredients = [
     { value: 1, name: "Ube", icon: "ube" },
     { value: 2, name: "Jelly", icon: "jelly" },
     { value: 3, name: "Beans", icon: "beans" },
@@ -24,24 +25,58 @@
     { value: 9, name: "Banana", icon: "banana" },
   ];
 
-  const solution = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9,
-    4, 5, 6, 7, 8, 9, 1, 2, 3,
-    7, 8, 9, 1, 2, 3, 4, 5, 6,
-    2, 3, 4, 5, 6, 7, 8, 9, 1,
-    5, 6, 7, 8, 9, 1, 2, 3, 4,
-    8, 9, 1, 2, 3, 4, 5, 6, 7,
-    3, 4, 5, 6, 7, 8, 9, 1, 2,
-    6, 7, 8, 9, 1, 2, 3, 4, 5,
-    9, 1, 2, 3, 4, 5, 6, 7, 8,
-  ];
+  const gameModes = {
+    easy: {
+      label: "Easy",
+      size: 4,
+      sectionSize: 2,
+      ingredientCount: 4,
+      trayColumns: 2,
+      bestKey: "haloHaloSudokuBest4",
+      solution: [
+        1, 2, 3, 4,
+        3, 4, 1, 2,
+        2, 1, 4, 3,
+        4, 3, 2, 1,
+      ],
+      puzzleMasks: [
+        [0, 1, 3, 5, 6, 9, 10, 12, 15],
+        [0, 1, 2, 4, 7, 8, 11, 13, 14],
+        [0, 2, 5, 7, 8, 10, 13, 15],
+      ],
+    },
+    hard: {
+      label: "Hard",
+      size: 9,
+      sectionSize: 3,
+      ingredientCount: 9,
+      trayColumns: 3,
+      bestKey: "haloHaloSudokuBest9",
+      solution: [
+        1, 2, 3, 4, 5, 6, 7, 8, 9,
+        4, 5, 6, 7, 8, 9, 1, 2, 3,
+        7, 8, 9, 1, 2, 3, 4, 5, 6,
+        2, 3, 4, 5, 6, 7, 8, 9, 1,
+        5, 6, 7, 8, 9, 1, 2, 3, 4,
+        8, 9, 1, 2, 3, 4, 5, 6, 7,
+        3, 4, 5, 6, 7, 8, 9, 1, 2,
+        6, 7, 8, 9, 1, 2, 3, 4, 5,
+        9, 1, 2, 3, 4, 5, 6, 7, 8,
+      ],
+      puzzleMasks: [
+        [0, 1, 4, 6, 8, 10, 12, 14, 17, 18, 22, 25, 28, 30, 32, 35, 36, 39, 41, 44, 46, 49, 50, 53, 55, 57, 60, 62, 64, 67, 69, 71, 73, 76, 80],
+        [0, 3, 5, 7, 11, 13, 15, 16, 19, 21, 24, 26, 27, 31, 34, 37, 40, 42, 45, 47, 51, 52, 54, 58, 61, 63, 65, 68, 70, 72, 74, 77, 78, 79, 80],
+        [1, 2, 4, 6, 8, 9, 12, 14, 16, 18, 20, 23, 25, 28, 29, 33, 35, 36, 38, 43, 45, 48, 50, 52, 54, 56, 59, 62, 63, 66, 68, 71, 73, 75, 78],
+      ],
+    },
+  };
 
-  const puzzleMasks = [
-    [0, 1, 4, 6, 8, 10, 12, 14, 17, 18, 22, 25, 28, 30, 32, 35, 36, 39, 41, 44, 46, 49, 50, 53, 55, 57, 60, 62, 64, 67, 69, 71, 73, 76, 80],
-    [0, 3, 5, 7, 11, 13, 15, 16, 19, 21, 24, 26, 27, 31, 34, 37, 40, 42, 45, 47, 51, 52, 54, 58, 61, 63, 65, 68, 70, 72, 74, 77, 78, 79, 80],
-    [1, 2, 4, 6, 8, 9, 12, 14, 16, 18, 20, 23, 25, 28, 29, 33, 35, 36, 38, 43, 45, 48, 50, 52, 54, 56, 59, 62, 63, 66, 68, 71, 73, 75, 78],
-  ];
-
+  let activeMode = null;
+  let size = 0;
+  let sectionSize = 0;
+  let ingredients = [];
+  let solution = [];
+  let puzzleMasks = [];
   let puzzleIndex = 0;
   let puzzle = [];
   let values = [];
@@ -51,7 +86,7 @@
   let elapsed = 0;
   let timer = 0;
   let complete = false;
-  let best = Number(localStorage.getItem("haloHaloSudokuBest9") || 0);
+  let best = 0;
 
   function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
@@ -64,7 +99,7 @@
   }
 
   function startTimer() {
-    if (timer || complete) return;
+    if (!activeMode || timer || complete) return;
     startedAt = Date.now() - elapsed * 1000;
     timer = window.setInterval(() => {
       elapsed = Math.floor((Date.now() - startedAt) / 1000);
@@ -107,11 +142,15 @@
   function renderCell(index) {
     const value = values[index];
     const ingredient = ingredientFor(value);
+    const row = rowFor(index);
+    const column = columnFor(index);
     const button = document.createElement("button");
     button.className = "sudoku-cell";
     button.type = "button";
     button.dataset.index = index;
-    button.setAttribute("aria-label", ingredient ? `${ingredient.name} at row ${rowFor(index) + 1}, column ${columnFor(index) + 1}` : `Empty square at row ${rowFor(index) + 1}, column ${columnFor(index) + 1}`);
+    button.setAttribute("aria-label", ingredient ? `${ingredient.name} at row ${row + 1}, column ${column + 1}` : `Empty square at row ${row + 1}, column ${column + 1}`);
+    if ((column + 1) % sectionSize === 0 && column < size - 1) button.classList.add("section-right");
+    if ((row + 1) % sectionSize === 0 && row < size - 1) button.classList.add("section-bottom");
     if (puzzle[index]) button.classList.add("given");
     if (index === selectedIndex) button.classList.add("selected");
     if (relatedToSelected(index)) button.classList.add("related");
@@ -141,16 +180,19 @@
   }
 
   function updateStats() {
+    if (!activeMode) return;
     const filled = values.filter(Boolean).length;
-    filledEl.textContent = `${filled}/81`;
+    filledEl.textContent = `${filled}/${size * size}`;
     mistakesEl.textContent = mistakes;
     timeEl.textContent = formatTime(elapsed);
     bestEl.textContent = best ? formatTime(best) : "--";
+    newButton.disabled = false;
     hintButton.disabled = complete || filled >= size * size;
     clearButton.disabled = complete || selectedIndex < 0 || puzzle[selectedIndex] || !values[selectedIndex];
   }
 
   function selectCell(index) {
+    if (!activeMode) return;
     selectedIndex = index;
     renderBoard();
     updateStats();
@@ -170,15 +212,15 @@
     stopTimer();
     if (!best || elapsed < best) {
       best = elapsed;
-      localStorage.setItem("haloHaloSudokuBest9", String(best));
+      localStorage.setItem(activeMode.bestKey, String(best));
     }
-    statusEl.textContent = "Halo-halo complete. Every spoonful fits.";
+    statusEl.textContent = `${activeMode.label} bowl complete. Every spoonful fits.`;
     boardEl.classList.add("complete");
     updateStats();
   }
 
   function placeIngredient(value) {
-    if (selectedIndex < 0 || complete) return;
+    if (!activeMode || value < 1 || value > size || selectedIndex < 0 || complete) return;
     if (puzzle[selectedIndex]) {
       statusEl.textContent = "That square is already part of the recipe.";
       flashCell(selectedIndex, "wrong");
@@ -203,7 +245,7 @@
   }
 
   function clearSelected() {
-    if (selectedIndex < 0 || puzzle[selectedIndex] || complete) return;
+    if (!activeMode || selectedIndex < 0 || puzzle[selectedIndex] || complete) return;
     values[selectedIndex] = 0;
     statusEl.textContent = "Square cleared.";
     renderBoard();
@@ -211,7 +253,7 @@
   }
 
   function hint() {
-    if (complete) return;
+    if (!activeMode || complete) return;
     startTimer();
     const openIndexes = values
       .map((value, index) => (value ? -1 : index))
@@ -228,6 +270,7 @@
   }
 
   function newPuzzle(next = true) {
+    if (!activeMode) return;
     stopTimer();
     if (next) puzzleIndex = (puzzleIndex + 1) % puzzleMasks.length;
     const givens = new Set(puzzleMasks[puzzleIndex]);
@@ -238,11 +281,61 @@
     elapsed = 0;
     complete = false;
     boardEl.classList.remove("complete");
-    statusEl.textContent = "Choose a square, then add an ingredient.";
+    statusEl.textContent = `${activeMode.label} bowl ready. Choose a square, then add an ingredient.`;
     renderBoard();
     renderTray();
     updateStats();
   }
+
+  function startGame(difficulty) {
+    const mode = gameModes[difficulty];
+    if (!mode) return;
+    activeMode = mode;
+    size = mode.size;
+    sectionSize = mode.sectionSize;
+    ingredients = allIngredients.slice(0, mode.ingredientCount);
+    solution = [...mode.solution];
+    puzzleMasks = mode.puzzleMasks;
+    puzzleIndex = 0;
+    best = Number(localStorage.getItem(mode.bestKey) || 0);
+    document.body.dataset.difficulty = difficulty;
+    boardEl.dataset.size = String(size);
+    boardEl.style.setProperty("--grid-size", String(size));
+    boardEl.setAttribute("aria-label", `${mode.label} Sudoku board, ${size} by ${size}`);
+    trayEl.style.setProperty("--tray-columns", String(mode.trayColumns));
+    trayEl.setAttribute("aria-label", `${mode.ingredientCount} ingredient choices for ${mode.label} mode`);
+    instructionsEl.textContent = `Fill the bowl so every row, column, and ${sectionSize}-by-${sectionSize} section has one of each of the ${mode.ingredientCount} ingredients.`;
+    difficultyScreenEl.hidden = true;
+    boardEl.hidden = false;
+    trayEl.hidden = false;
+    difficultyButton.hidden = false;
+    newPuzzle(false);
+  }
+
+  function showDifficultyChooser() {
+    stopTimer();
+    activeMode = null;
+    delete document.body.dataset.difficulty;
+    difficultyScreenEl.hidden = false;
+    boardEl.hidden = true;
+    trayEl.hidden = true;
+    difficultyButton.hidden = true;
+    newButton.disabled = true;
+    hintButton.disabled = true;
+    clearButton.disabled = true;
+    instructionsEl.textContent = "Choose Easy for a 4-by-4 bowl or Hard for the full 9-by-9 recipe.";
+    filledEl.textContent = "0/--";
+    mistakesEl.textContent = "0";
+    timeEl.textContent = "0:00";
+    bestEl.textContent = "--";
+    statusEl.textContent = "Choose your difficulty to start.";
+    difficultyScreenEl.querySelector("[data-difficulty=\"easy\"]").focus();
+  }
+
+  difficultyScreenEl.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-difficulty]");
+    if (button) startGame(button.dataset.difficulty);
+  });
 
   boardEl.addEventListener("click", (event) => {
     const cell = event.target.closest("[data-index]");
@@ -255,9 +348,10 @@
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key >= "1" && event.key <= "9") placeIngredient(Number(event.key));
+    const value = Number(event.key);
+    if (activeMode && Number.isInteger(value) && value >= 1 && value <= size) placeIngredient(value);
     if (event.key === "Backspace" || event.key === "Delete") clearSelected();
-    if (event.key.startsWith("Arrow") && selectedIndex >= 0) {
+    if (activeMode && event.key.startsWith("Arrow") && selectedIndex >= 0) {
       event.preventDefault();
       const row = rowFor(selectedIndex);
       const column = columnFor(selectedIndex);
@@ -270,5 +364,6 @@
   newButton.addEventListener("click", () => newPuzzle(true));
   hintButton.addEventListener("click", hint);
   clearButton.addEventListener("click", clearSelected);
-  newPuzzle(false);
+  difficultyButton.addEventListener("click", showDifficultyChooser);
+  showDifficultyChooser();
 })();
