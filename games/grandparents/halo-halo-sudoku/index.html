@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Halo-Halo Sudoku | Wong Way Gaming</title>
     <link rel="stylesheet" href="../../shared/game-shell.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=easy-hard">
   </head>
   <body>
     <div class="game-page">
@@ -15,18 +15,19 @@
       </header>
       <main class="game-main">
         <aside class="info-panel">
-          <p>Fill the halo-halo bowl so every row, column, and 3-by-3 section has one of each ingredient.</p>
+          <p id="instructions">Choose Easy for a 4-by-4 bowl or Hard for the full 9-by-9 recipe.</p>
           <div class="stat-grid">
-            <div class="stat"><span>Filled</span><strong id="filled">0/81</strong></div>
+            <div class="stat"><span>Filled</span><strong id="filled">0/--</strong></div>
             <div class="stat"><span>Mistakes</span><strong id="mistakes">0</strong></div>
             <div class="stat"><span>Time</span><strong id="time">0:00</strong></div>
             <div class="stat"><span>Best</span><strong id="best">--</strong></div>
           </div>
-          <p class="status-line" id="status">Choose a square, then add an ingredient.</p>
+          <p class="status-line" id="status">Choose your difficulty to start.</p>
           <div class="control-row">
-            <button class="game-button" id="new-button" type="button">New Bowl</button>
-            <button class="game-button secondary" id="hint-button" type="button">Hint</button>
-            <button class="game-button secondary" id="clear-button" type="button">Clear</button>
+            <button class="game-button" id="new-button" type="button" disabled>New Bowl</button>
+            <button class="game-button secondary" id="hint-button" type="button" disabled>Hint</button>
+            <button class="game-button secondary" id="clear-button" type="button" disabled>Clear</button>
+            <button class="game-button secondary" id="difficulty-button" type="button" hidden>Difficulty</button>
           </div>
         </aside>
         <section class="stage halo-stage" aria-label="Halo-Halo Sudoku game">
@@ -34,11 +35,30 @@
             <span class="dessert-spoon"></span>
             <span class="dessert-glass"></span>
           </div>
-          <div class="sudoku-board" id="board" aria-label="Sudoku board"></div>
-          <div class="ingredient-tray" id="ingredient-tray" aria-label="Ingredient choices"></div>
+          <div class="difficulty-screen" id="difficulty-screen">
+            <div class="difficulty-card" role="group" aria-labelledby="difficulty-title" aria-describedby="difficulty-description">
+              <p class="difficulty-kicker">Pick your recipe</p>
+              <h2 id="difficulty-title">Easy or Hard?</h2>
+              <p id="difficulty-description">Choose a smaller bowl to learn the recipe, or take on all nine ingredients.</p>
+              <div class="difficulty-options">
+                <button class="difficulty-choice easy-choice" type="button" data-difficulty="easy">
+                  <strong>Easy</strong>
+                  <span>4 × 4 grid</span>
+                  <small>4 ingredients · 2 × 2 sections</small>
+                </button>
+                <button class="difficulty-choice hard-choice" type="button" data-difficulty="hard">
+                  <strong>Hard</strong>
+                  <span>9 × 9 grid</span>
+                  <small>9 ingredients · 3 × 3 sections</small>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="sudoku-board" id="board" aria-label="Sudoku board" hidden></div>
+          <div class="ingredient-tray" id="ingredient-tray" aria-label="Ingredient choices" hidden></div>
         </section>
       </main>
     </div>
-    <script src="game.js"></script>
+    <script src="game.js?v=easy-hard"></script>
   </body>
 </html>
